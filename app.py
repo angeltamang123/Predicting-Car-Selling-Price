@@ -21,7 +21,6 @@ def load_model_and_data():
     try:
         model = joblib.load('final_random_forest_model.joblib')
         # We need the original dataframe to get the lists for our dropdowns
-        # Corrected the path to match your structure
         df = pd.read_csv('./Data/car_processed.csv')
     except FileNotFoundError:
         st.error("Model or data file not found. Make sure 'final_random_forest_model.joblib' and './Data/car_processed.csv' are in the correct directories.")
@@ -50,7 +49,7 @@ if model_pipeline and df is not None:
         models = sorted(df[df['brand'] == brand]['model'].unique())
         model = st.selectbox('Model', options=models, key='model_select')
 
-        # --- MODIFICATION: Fetch default specs based on selected model ---
+        #-- Fetch default specs based on selected model ---
         default_specs = {}
         if brand and model:
             model_df = df[(df['brand'] == brand) & (df['model'] == model)]
@@ -61,7 +60,6 @@ if model_pipeline and df is not None:
                 default_specs['engine'] = int(model_df['engine'].median())
                 default_specs['max_power'] = round(model_df['max_power'].median(), 2)
                 default_specs['mileage'] = round(model_df['mileage(km/ltr/kg)'].median(), 2)
-        # --- END MODIFICATION ---
 
     with col2:
         st.header("Usage Details")
@@ -82,8 +80,6 @@ if model_pipeline and df is not None:
 
     with col3:
         st.header("Technical Specs (Auto-filled)")
-        
-        # --- MODIFICATION: Use default specs and disable widgets ---
         
         # Get the index for the default value to pre-select it in the dropdown
         fuel_options = list(df['fuel'].unique())
@@ -112,7 +108,6 @@ if model_pipeline and df is not None:
         mileage = st.number_input('Mileage (km/ltr or kg)', min_value=5.0, max_value=45.0, 
                                 value=default_specs.get('mileage', 19.0), 
                                 disabled=True)
-        # --- END MODIFICATION ---
 
     # --- Prediction Logic ---
     if st.button('Predict Selling Price', use_container_width=True):
